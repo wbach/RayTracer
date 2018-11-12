@@ -1,4 +1,3 @@
-#include "RayTracerEngine.h"
 #include "Camera.h"
 #include "Image/BmpImage.h"
 #include "Intersection.h"
@@ -6,6 +5,7 @@
 #include "Objects/Light.h"
 #include "Objects/Material.h"
 #include "Ray.h"
+#include "RayTracerEngine.h"
 #include "Scene.h"
 
 namespace RayTracer
@@ -64,9 +64,9 @@ vec3 RayTracerEngine::trace(const Ray &ray, float &energy, const IObject *parent
     auto reflectedRayDirection = ray.getDirection() - (2.f * ray.getDirection() * normal) * normal;
     Ray reflectedRay(intersection.getPoint(), reflectedRayDirection, ray.getX(), ray.getY());
 
-    auto reflectedColor = trace(reflectedRay, energy, intersection.getObject());
-
-    return color + reflectedColor;
+    auto totalColor = color + trace(reflectedRay, energy, intersection.getObject());
+    limtColorValue(totalColor);
+    return totalColor;
 }
 Intersection RayTracerEngine::findIntersection(const Ray &ray, const IObject *parent) const
 {
@@ -107,7 +107,7 @@ vec3 RayTracerEngine::calculateColor(const Ray &ray, const Intersection &interse
         outputColor += procesLight(ray, light, intersection.getPoint(), normal, intersection.getObject()) * energy;
     }
 
-	limtColorValue(outputColor);
+    limtColorValue(outputColor);
     return outputColor;
 }
 vec3 RayTracerEngine::procesLight(const Ray &ray, const Light &light, const vec3 &intersectionPoint, const vec3 &normal,
@@ -138,7 +138,7 @@ vec3 RayTracerEngine::procesLight(const Ray &ray, const Light &light, const vec3
 
     if (s > 0.f && s < 90.f * PI / 180.f)
     {
-       specular = obj->getMaterial().specular_ * light.color_ * pow(s, obj->getMaterial().shineDamper_);
+        specular = obj->getMaterial().specular_ * light.color_ * pow(s, obj->getMaterial().shineDamper_);
     }
 
     return ambient + diffuse + specular;

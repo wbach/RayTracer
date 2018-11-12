@@ -7,13 +7,14 @@
 using namespace RayTracer;
 
 void addObject(Scene &scene, IObject *obj, const vec3 &position, const vec3 &ambient, const vec3 &diffuse,
-               const vec3 &specular, float shine)
+               const vec3 &specular, float shine, bool isReflect)
 {
     Material material;
     material.ambient_     = ambient;
     material.diffuse_     = diffuse;
     material.specular_    = specular;
     material.shineDamper_ = shine;
+    material.isReflect    = isReflect;
 
     Transform transform;
     transform.position_ = position;
@@ -23,17 +24,17 @@ void addObject(Scene &scene, IObject *obj, const vec3 &position, const vec3 &amb
 }
 
 void addSphere(Scene &scene, float radius, const vec3 &position, const vec3 &ambient, const vec3 &diffuse,
-               const vec3 &specular, float shine)
+               const vec3 &specular, float shine, bool isReflect)
 {
     scene.objects_.emplace_back(new Sphere(radius));
-    addObject(scene, scene.objects_.back().get(), position, ambient, diffuse, specular, shine);
+    addObject(scene, scene.objects_.back().get(), position, ambient, diffuse, specular, shine, isReflect);
 }
 
 void addTriangle(Scene &scene, const vec3 &v1, const vec3 &v2, const vec3 &v3, const vec3 &position,
-                 const vec3 &ambient, const vec3 &diffuse, const vec3 &specular, float shine)
+                 const vec3 &ambient, const vec3 &diffuse, const vec3 &specular, float shine, bool isReflect)
 {
     scene.objects_.emplace_back(new Triangle(v1, v2, v3));
-    addObject(scene, scene.objects_.back().get(), position, ambient, diffuse, specular, shine);
+    addObject(scene, scene.objects_.back().get(), position, ambient, diffuse, specular, shine, isReflect);
 }
 
 void addLight(Scene &scene, const vec3 &position, const vec3 &color)
@@ -51,16 +52,16 @@ vec3 createFloatRgb(uint8 r, uint8 g, uint8 b)
 void createExampleScene(Scene &scene)
 {
     addSphere(scene, 2.f, vec3(0), createFloatRgb(3, 3, 3), createFloatRgb(204, 3, 3), createFloatRgb(204, 204, 204),
-              20);
+              20, false);
 
     addSphere(scene, 1.f, vec3(2.f, 2.f, 1.f), createFloatRgb(3, 3, 3), createFloatRgb(3, 204, 3),
-              createFloatRgb(3, 3, 3), 20);
+              createFloatRgb(3, 3, 3), 20, false);
 
     addTriangle(scene, vec3(-5, -4, -5), vec3(-5, -4, 5), vec3(5, -4, 5), vec3(0), createFloatRgb(3, 3, 3),
-                createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1);
+                createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1, true);
 
     addTriangle(scene, vec3(5, -4, 5), vec3(5, -4, -5), vec3(-5, -4, -5), vec3(0), createFloatRgb(3, 3, 3),
-                createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1);
+                createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1, true);
 
     addLight(scene, vec3(-4, 4, -2), createFloatRgb(255, 255, 255));
     addLight(scene, vec3(1, 1, -10), createFloatRgb(255, 255, 255));
