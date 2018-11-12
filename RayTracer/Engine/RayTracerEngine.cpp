@@ -149,7 +149,7 @@ bool RayTracerEngine::isShadow(const Ray &ray) const
     {
         float intersectionPoint = obj->intersect(ray);
 
-        if (intersectionPoint > std::numeric_limits<float>::min())
+        if (intersectionPoint > 0.001f)
         {
             return true;
         }

@@ -15,6 +15,8 @@ public:
 
 private:
     vec3 calcualteFlatNormal() const;
+    vec3 calculateSmoothNormal() const;
+    void calculateStaticNormal();
 
 private:
     vec3 v1_;
@@ -22,5 +24,8 @@ private:
     vec3 v3_;
     bool useCustomNormal;
     bool useSmoothNormal;
+    float d_;
+    float dot00_;
+    vec3 v0_;
 };
 }  // namespace RayTracer
