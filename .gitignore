@@ -20,13 +20,6 @@ Data
 *.userosscache
 *.sln.docstates
 
-
-#Moje
-*.sln
-*.vcxproj
-*.filters
-*.user
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
