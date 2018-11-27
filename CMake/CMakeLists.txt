@@ -11,7 +11,7 @@ include_directories("./RayTracer/")
 
 add_executable(rayTracerExe ${SRCS})
 set_target_properties(rayTracerExe PROPERTIES COMPILE_FLAGS "-m32 -O3" LINK_FLAGS "-m32")
-#target_link_libraries(rayTracerExe freeimage)
+target_link_libraries(rayTracerExe pthread freeimage)
 
 
 

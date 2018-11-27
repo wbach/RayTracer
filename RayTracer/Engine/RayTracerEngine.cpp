@@ -7,9 +7,20 @@
 #include "Ray.h"
 #include "RayTracerEngine.h"
 #include "Scene.h"
+#include "StepPooler.h"
+#include <thread>
+#include <iostream>
+
+const uint32 THREADS_COUNT = 4;
 
 namespace RayTracer
 {
+namespace
+{
+std::unique_ptr<StepPooler> stepPooler;
+std::mutex stepMutex_;
+}
+
 RayTracerEngine::RayTracerEngine(const Scene &scene)
     : scene_(scene)
 {
@@ -17,8 +28,13 @@ RayTracerEngine::RayTracerEngine(const Scene &scene)
     {
         return;
     }
+    stepPooler.reset(new StepPooler(scene_.camera_->getViewPort()));
+
     image_ = std::make_unique<BmpImage>(scene.camera_->getViewPort(), 3);
-    run();
+
+    classicRun();
+    //multiThreadsRun(THREADS_COUNT);
+
     image_->save("output.bmp");
 }
 
@@ -26,21 +42,63 @@ RayTracerEngine::~RayTracerEngine()
 {
 }
 
-void RayTracerEngine::run()
+void RayTracerEngine::classicRun()
 {
     for (uint32 y = 0; y < scene_.camera_->getViewPort().y; y++)
     {
         for (uint32 x = 0; x < scene_.camera_->getViewPort().x; x++)
         {
-            float energy = 1.0f;
-            vec3 pixelVector(x, y, 1.0f);
-            vec3 dirVector = glm::normalize(pixelVector * scene_.camera_->getMatrix());
-            Ray ray(scene_.camera_->getPosition(), dirVector, x, y);
-            auto color = trace(ray, energy);
-            image_->setPixel(vec2ui(x, y), convertColor(color));
+            step(x, y);
         }
     }
 }
+
+void RayTracerEngine::multiThreadsRun(uint32 threadsCount)
+{
+    std::vector<std::thread> threads;
+
+    for (uint32 x = 0; x < threadsCount - 1; ++x)
+    {
+        threads.emplace_back(&RayTracerEngine::run, this);
+    }
+
+    run();
+
+    for (auto& thread : threads)
+    {
+        thread.join();
+    }
+}
+
+void RayTracerEngine::run()
+{
+    while (true)
+    {
+        wb::optional<vec2ui> s;
+        {
+            std::lock_guard<std::mutex> m(stepMutex_);
+            s = stepPooler->getNextStep();
+        }
+
+        if (!s)
+        {
+            break;
+        }
+
+        step(s.get().x, s.get().y);
+    }
+}
+
+void RayTracerEngine::step(uint32 x, uint32 y)
+{
+    float energy = 1.0f;
+    vec3 pixelVector(x, y, 1.0f);
+    vec3 dirVector = glm::normalize(pixelVector * scene_.camera_->getMatrix());
+    Ray ray(scene_.camera_->getPosition(), dirVector, x, y);
+    auto color = trace(ray, energy);
+    image_->setPixel(vec2ui(x, y), convertColor(color));
+}
+
 vec3 RayTracerEngine::trace(const Ray &ray, float &energy, const IObject *parent)
 {
     auto intersection = findIntersection(ray, parent);

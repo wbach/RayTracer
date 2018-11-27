@@ -21,6 +21,9 @@ public:
 
 private:
     void run();
+    void step(uint32 x, uint32 y);
+    void multiThreadsRun(uint32 threadsCount);
+    void classicRun();
     vec3 trace(const Ray& ray, float& energy, const IObject* parent = nullptr);
     Intersection findIntersection(const Ray& ray, const IObject* parent) const;
     vec3 calculateColor(const Ray& ray, const Intersection& intersection, float energy);
