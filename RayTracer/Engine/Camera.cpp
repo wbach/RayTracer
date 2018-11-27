@@ -31,7 +31,7 @@ void Camera::calculateMatrix()
     vec3 v = glm::normalize(glm::cross(lookVector, u));
     vec3 uf = u * (static_cast<float>(viewPort_.x) / 2.f);
     vec3 vf = v * (static_cast<float>(viewPort_.y) / 2.f);
-    vec3 o  = glm::normalize(lookVector) * (viewPort_.x / (2.f * tan(fov_ / 2.f))) - uf - vf;
+    vec3 o  = glm::normalize(lookVector) * (viewPort_.x / (2.f * tanf(fov_ / 2.f))) - uf - vf;
 
     primaryMatrix_ = mat3(u.x, v.x, o.x, u.y, v.y, o.y, u.z, v.z, o.z);
 }

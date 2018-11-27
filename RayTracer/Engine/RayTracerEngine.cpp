@@ -138,7 +138,7 @@ vec3 RayTracerEngine::procesLight(const Ray &ray, const Light &light, const vec3
 
     if (s > 0.f && s < 90.f * PI / 180.f)
     {
-        specular = obj->getMaterial().specular_ * light.color_ * pow(s, obj->getMaterial().shineDamper_);
+        specular = obj->getMaterial().specular_ * light.color_ * powf(s, obj->getMaterial().shineDamper_);
     }
 
     return ambient + diffuse + specular;
