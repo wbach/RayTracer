@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "../../Utils/Types.h"
+#include "../../Utils/optional.hpp"
 
 namespace RayTracer
 {
@@ -7,6 +8,8 @@ class Ray;
 class Image;
 struct Transform;
 struct Material;
+
+typedef wb::optional<float> OptionalFloat;
 
 class IObject
 {
@@ -16,7 +19,7 @@ public:
     }
     virtual uint32 getId() const                             = 0;
     virtual void setTransform(const Transform& pos)          = 0;
-    virtual float intersect(const Ray& ray) const            = 0;
+    virtual OptionalFloat intersect(const Ray& ray) const    = 0;
     virtual void calculateNormal(const vec3& intersectPoint) = 0;
     virtual const vec3& getNormal() const                    = 0;
     virtual const Material& getMaterial() const              = 0;

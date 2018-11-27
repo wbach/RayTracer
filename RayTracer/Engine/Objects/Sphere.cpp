@@ -7,7 +7,7 @@ Sphere::Sphere(float radius)
     : radius_(radius)
 {
 }
-float Sphere::intersect(const Ray& ray) const
+OptionalFloat Sphere::intersect(const Ray& ray) const
 {
     const auto& o = ray.getPosition();
     const auto& d = glm::normalize(ray.getDirection());
@@ -29,7 +29,7 @@ float Sphere::intersect(const Ray& ray) const
             return t0;
     }
 
-    return -1;
+    return OptionalFloat();
 }
 void Sphere::calculateNormal(const vec3& intersectPoint)
 {

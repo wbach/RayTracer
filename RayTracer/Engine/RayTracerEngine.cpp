@@ -81,12 +81,13 @@ Intersection RayTracerEngine::findIntersection(const Ray &ray, const IObject *pa
             continue;
         }
 
-        float intersectionPoint = obj->intersect(ray);
-        if (intersectionPoint > std::numeric_limits<float>::min())
+        auto intersectionPoint = obj->intersect(ray);
+
+        if (intersectionPoint)
         {
-            if (intersectionPoint < t)
+            if (intersectionPoint.get() < t)
             {
-                t = intersectionPoint;
+                t = intersectionPoint.get();
                 result.setObject(obj.get());
             }
         }
@@ -143,13 +144,14 @@ vec3 RayTracerEngine::procesLight(const Ray &ray, const Light &light, const vec3
 
     return ambient + diffuse + specular;
 }
+
 bool RayTracerEngine::isShadow(const Ray &ray) const
 {
     for (const auto &obj : scene_.objects_)
     {
-        float intersectionPoint = obj->intersect(ray);
+        const auto& intersectionPoint = obj->intersect(ray);
 
-        if (intersectionPoint > 0.001f)
+        if (intersectionPoint)
         {
             return true;
         }

@@ -3,10 +3,6 @@
 
 namespace RayTracer
 {
-namespace
-{
-float u = 0.f, v = 0.f;
-}
 Triangle::Triangle(const vec3& v1, const vec3& v2, const vec3& v3)
     : v1_(v1)
     , v2_(v2)
@@ -30,34 +26,61 @@ Triangle::Triangle(const vec3& v1, const vec3& v2, const vec3& v3, const vec3& n
     v0_    = v3_ - v1_;
     dot00_ = glm::dot(v0_, v0_);
 }
-float Triangle::intersect(const Ray& ray) const
+OptionalFloat Triangle::intersect(const Ray& ray) const
 {
     float t =
         -(normal_.x * ray.getPosition().x + normal_.y * ray.getPosition().y + normal_.z * ray.getPosition().z + d_) /
         (normal_.x * ray.getDirection().x + normal_.y * ray.getDirection().y + normal_.z * ray.getDirection().z);
-    vec3 point = ray.getPosition() + t * ray.getDirection();
-    vec3 v2    = point - v1_;
 
+    if (t < 0.001f)
+    {
+        return OptionalFloat();
+    }
+
+    vec3 intersectPoint = ray.getPosition() + t * ray.getDirection();
+
+    const auto& uv = calculateUV(intersectPoint);
+
+    if (isInPlanePointInTriangle(uv))
+    {
+        return t;
+    }
+
+    return OptionalFloat();
+}
+
+bool Triangle::isInPlanePointInTriangle(const vec2& uv) const
+{
+    return (uv.x >= 0) && (uv.y >= 0) && (uv.x + uv.y < 1);
+}
+
+vec2 Triangle::calculateUV(const vec3& intersectPoint) const
+{
+    vec3 v2 = intersectPoint - v1_;
     vec3 v1 = v2_ - v1_;
 
     float dot01    = glm::dot(v0_, v1);
     float dot02    = glm::dot(v0_, v2);
     float dot11    = glm::dot(v1, v1);
     float dot12    = glm::dot(v1, v2);
-    float invDenom = 1 / (dot00_ * dot11 - dot01 * dot01);
+    float invDenom = 1.f / (dot00_ * dot11 - dot01 * dot01);
 
-    u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    v = (dot00_ * dot12 - dot01 * dot02) * invDenom;
+    vec2 result;
+    result.x = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    result.y = (dot00_ * dot12 - dot01 * dot02) * invDenom;
 
-    if ((u >= 0) && (v >= 0) && (u + v < 1))
-    {
-        return t;
-    }
-
-    return 0.0f;
+    return result;
 }
+
 void Triangle::calculateNormal(const vec3& intersectPoint)
 {
+    if (useCustomNormal || !useSmoothNormal)
+    {
+        return;
+    }
+
+    const auto& uv = calculateUV(intersectPoint);
+    normal_ = calculateSmoothNormal(uv);
 }
 
 void Triangle::calculateStaticNormal()
@@ -67,25 +90,19 @@ void Triangle::calculateStaticNormal()
         return;
     }
 
-    normal_ = useSmoothNormal ? calculateSmoothNormal() : calcualteFlatNormal();
-
+    vec3 ab = v2_ - v1_;
+    vec3 cb = v3_ - v2_;
+    normal_ = glm::normalize(glm::cross(ab, cb));
     d_ = -1.f * glm::dot(normal_, v1_);
 }
 
-vec3 Triangle::calcualteFlatNormal() const
-{
-    vec3 AB     = v2_ - v1_;
-    vec3 CB     = v3_ - v2_;
-    vec3 normal = glm::normalize(glm::cross(AB, CB));
-    return normal;
-}
-vec3 Triangle::calculateSmoothNormal() const
+vec3 Triangle::calculateSmoothNormal(const vec2& uv) const
 {
     vec3 n;
-    float s = u + v;
-    n.x     = -((1.0 - s) * v2_.x + v1_.x * u + v3_.x * v);
-    n.y     = -((1.0 - s) * v2_.y + v1_.y * u + v3_.y * v);
-    n.z     = -((1.0 - s) * v2_.z + v1_.z * u + v3_.z * v);
+    float s = uv.x + uv.y;
+    n.x     = -((1.0 - s) * v2_.x + v1_.x * uv.x + v3_.x * uv.y);
+    n.y     = -((1.0 - s) * v2_.y + v1_.y * uv.x + v3_.y * uv.y);
+    n.z     = -((1.0 - s) * v2_.z + v1_.z * uv.x + v3_.z * uv.y);
     n       = glm::normalize(n);
     return n;
 }
