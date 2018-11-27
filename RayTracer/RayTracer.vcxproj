@@ -123,10 +123,12 @@
     <ClCompile Include="Engine\Image\BmpImage.cpp" />
     <ClCompile Include="Engine\Intersection.cpp" />
     <ClCompile Include="Engine\Objects\BaseObject.cpp" />
+    <ClCompile Include="Engine\Objects\Mesh.cpp" />
     <ClCompile Include="Engine\Objects\Sphere.cpp" />
     <ClCompile Include="Engine\Objects\Triangle.cpp" />
     <ClCompile Include="Engine\Ray.cpp" />
     <ClCompile Include="Engine\RayTracerEngine.cpp" />
+    <ClCompile Include="Engine\StepPooler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utils\Types.cpp" />
   </ItemGroup>
@@ -140,6 +142,7 @@
     <ClInclude Include="Engine\Objects\IObject.h" />
     <ClInclude Include="Engine\Objects\Light.h" />
     <ClInclude Include="Engine\Objects\Material.h" />
+    <ClInclude Include="Engine\Objects\Mesh.h" />
     <ClInclude Include="Engine\Objects\ObjectType.h" />
     <ClInclude Include="Engine\Objects\Sphere.h" />
     <ClInclude Include="Engine\Objects\Transform.h" />
@@ -147,6 +150,7 @@
     <ClInclude Include="Engine\Ray.h" />
     <ClInclude Include="Engine\RayTracerEngine.h" />
     <ClInclude Include="Engine\Scene.h" />
+    <ClInclude Include="Engine\StepPooler.h" />
     <ClInclude Include="Utils\Types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

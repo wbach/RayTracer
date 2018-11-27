@@ -31,8 +31,9 @@ OptionalFloat Sphere::intersect(const Ray& ray) const
 
     return OptionalFloat();
 }
-void Sphere::calculateNormal(const vec3& intersectPoint)
+
+vec3 Sphere::getNormal(const vec3& intersectPoint) const
 {
-    normal_ = glm::normalize(intersectPoint - transform_.position_);
+    return glm::normalize(intersectPoint - transform_.position_);
 }
 }  // namespace RayTracer

@@ -20,8 +20,8 @@ public:
     virtual uint32 getId() const                             = 0;
     virtual void setTransform(const Transform& pos)          = 0;
     virtual OptionalFloat intersect(const Ray& ray) const    = 0;
-    virtual void calculateNormal(const vec3& intersectPoint) = 0;
     virtual const vec3& getNormal() const                    = 0;
+    virtual vec3 getNormal(const vec3& intersectPoint) const = 0;
     virtual const Material& getMaterial() const              = 0;
     virtual void setMaterial(const Material&)                = 0;
     // virtual const vec3& imageMap(const Ray&, const vec3& point, const Image& img) = 0;

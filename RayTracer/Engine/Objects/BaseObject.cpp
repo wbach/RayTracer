@@ -28,4 +28,8 @@ void BaseObject::setMaterial(const Material& material)
 {
     material_ = material;
 }
+vec3 BaseObject::getNormal(const vec3&) const
+{
+    return normal_;
+}
 }  // namespace RayTracer

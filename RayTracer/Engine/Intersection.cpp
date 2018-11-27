@@ -7,6 +7,7 @@ namespace RayTracer
 Intersection::Intersection()
     : objPtr_(nullptr)
     , isSet_(false)
+    , normal_(0)
 {
 }
 void Intersection::calculateIntersectionPointAndObjNormal(const Ray& ray, float t)
@@ -14,12 +15,16 @@ void Intersection::calculateIntersectionPointAndObjNormal(const Ray& ray, float 
     if (isSet_)
     {
         point_ = ray.getPosition() + t * ray.getDirection();
-        objPtr_->calculateNormal(point_);
+        normal_ = objPtr_->getNormal(point_);
     }
 }
 const IObject* Intersection::getObject() const
 {
     return objPtr_;
+}
+const vec3& Intersection::getNormal() const
+{
+    return normal_;
 }
 void Intersection::setObject(IObject* ptr)
 {

@@ -10,7 +10,7 @@ class Sphere : public BaseObject
 public:
     Sphere(float radius);
     virtual OptionalFloat intersect(const Ray& ray) const final;
-    virtual void calculateNormal(const vec3& intersectPoint) final;
+    virtual vec3 getNormal(const vec3& intersectPoint) const;
 
 private:
     float radius_;

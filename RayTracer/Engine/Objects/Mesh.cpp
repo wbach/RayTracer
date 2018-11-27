@@ -42,8 +42,8 @@ OptionalFloat Mesh::intersect(const Ray& ray) const
 
     return OptionalFloat();
 }
-void Mesh::calculateNormal(const vec3& intersectPoint)
+vec3 Mesh::getNormal(const vec3& intersectPoint) const
 {
-
+    return vec3();
 }
 }  // namespace RayTracer

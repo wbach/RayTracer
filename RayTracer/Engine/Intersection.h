@@ -13,6 +13,7 @@ public:
 
     void calculateIntersectionPointAndObjNormal(const Ray& ray, float t);
     const IObject* getObject() const;
+    const vec3& getNormal() const;
     void setObject(IObject* ptr);
     const vec3& getPoint() const;
     operator bool() const
@@ -24,5 +25,6 @@ private:
     vec3 point_;
     IObject* objPtr_;
     bool isSet_;
+    vec3 normal_;
 };
 }  // namespace RayTracer

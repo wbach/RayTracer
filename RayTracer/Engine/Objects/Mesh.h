@@ -10,7 +10,7 @@ public:
     Mesh();
     Mesh(const std::vector<Triangle>& triangles);
     virtual OptionalFloat intersect(const Ray& ray) const final;
-    virtual void calculateNormal(const vec3& intersectPoint) final;
+    virtual vec3 getNormal(const vec3& intersectPoint) const;
     void addTriangle(const Triangle& triangle);
 
 private:

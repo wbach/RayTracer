@@ -9,6 +9,7 @@
 #include "Scene.h"
 #include "StepPooler.h"
 #include <thread>
+#include <mutex>
 #include <iostream>
 
 const uint32 THREADS_COUNT = 4;
@@ -32,8 +33,8 @@ RayTracerEngine::RayTracerEngine(const Scene &scene)
 
     image_ = std::make_unique<BmpImage>(scene.camera_->getViewPort(), 3);
 
-    classicRun();
-    //multiThreadsRun(THREADS_COUNT);
+    //classicRun();
+    multiThreadsRun(THREADS_COUNT);
 
     image_->save("output.bmp");
 }
@@ -118,7 +119,7 @@ vec3 RayTracerEngine::trace(const Ray &ray, float &energy, const IObject *parent
         return color;
     }
 
-    const auto &normal         = intersection.getObject()->getNormal();
+    const auto &normal         = intersection.getNormal();
     auto reflectedRayDirection = ray.getDirection() - (2.f * ray.getDirection() * normal) * normal;
     Ray reflectedRay(intersection.getPoint(), reflectedRayDirection, ray.getX(), ray.getY());
 
@@ -159,11 +160,12 @@ vec3 RayTracerEngine::calculateColor(const Ray &ray, const Intersection &interse
 {
     vec3 outputColor = scene_.bgColor_;
 
-    const auto &normal = intersection.getObject()->getNormal();
+    const auto &normal = intersection.getNormal();
 
     for (const auto &light : scene_.lights_)
     {
-        outputColor += procesLight(ray, light, intersection.getPoint(), normal, intersection.getObject()) * energy;
+        outputColor +=
+            procesLight(ray, light, intersection.getPoint(), intersection.getNormal(), intersection.getObject()) * energy;
     }
 
     limtColorValue(outputColor);

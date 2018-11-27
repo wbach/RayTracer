@@ -14,6 +14,7 @@ public:
     virtual const Material& getMaterial() const;
     virtual uint32 getId() const;
     virtual void setMaterial(const Material&);
+    virtual vec3 getNormal(const vec3& intersectPoint) const;
 
 protected:
     Material material_;

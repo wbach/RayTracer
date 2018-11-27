@@ -1,7 +1,13 @@
 #include "StepPooler.h"
+#include <mutex>
 
 namespace RayTracer
 {
+namespace
+{
+std::mutex mutex_;
+}
+
 StepPooler::StepPooler(const vec2ui& viewPort)
     : viewPort_(viewPort)
 {
@@ -9,7 +15,6 @@ StepPooler::StepPooler(const vec2ui& viewPort)
 wb::optional<vec2ui> StepPooler::getNextStep()
 {
     vec2ui result;
-
 
     if (current_.x < viewPort_.x)
     {

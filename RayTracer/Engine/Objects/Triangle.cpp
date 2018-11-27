@@ -1,5 +1,5 @@
-#include "../Ray.h"
 #include "Triangle.h"
+#include "../Ray.h"
 
 namespace RayTracer
 {
@@ -49,6 +49,17 @@ OptionalFloat Triangle::intersect(const Ray& ray) const
     return OptionalFloat();
 }
 
+vec3 Triangle::getNormal(const vec3& intersectPoint) const
+{
+    if (useCustomNormal || !useSmoothNormal)
+    {
+        return normal_;
+    }
+
+    const auto& uv = calculateUV(intersectPoint);
+    return calculateSmoothNormal(uv);
+}
+
 bool Triangle::isInPlanePointInTriangle(const vec2& uv) const
 {
     return (uv.x >= 0) && (uv.y >= 0) && (uv.x + uv.y < 1);
@@ -72,17 +83,6 @@ vec2 Triangle::calculateUV(const vec3& intersectPoint) const
     return result;
 }
 
-void Triangle::calculateNormal(const vec3& intersectPoint)
-{
-    if (useCustomNormal || !useSmoothNormal)
-    {
-        return;
-    }
-
-    const auto& uv = calculateUV(intersectPoint);
-    normal_ = calculateSmoothNormal(uv);
-}
-
 void Triangle::calculateStaticNormal()
 {
     if (useCustomNormal)
@@ -93,7 +93,7 @@ void Triangle::calculateStaticNormal()
     vec3 ab = v2_ - v1_;
     vec3 cb = v3_ - v2_;
     normal_ = glm::normalize(glm::cross(ab, cb));
-    d_ = -1.f * glm::dot(normal_, v1_);
+    d_      = -1.f * glm::dot(normal_, v1_);
 }
 
 vec3 Triangle::calculateSmoothNormal(const vec2& uv) const

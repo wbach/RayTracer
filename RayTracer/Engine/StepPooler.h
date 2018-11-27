@@ -1,7 +1,6 @@
 #pragma once
 #include "../Utils/Types.h"
 #include "../Utils/optional.hpp"
-#include <mutex>
 
 namespace RayTracer
 {
@@ -14,6 +13,5 @@ public:
 private:
     vec2ui viewPort_;
     vec2ui current_;
-    std::mutex mutex_;
 };
 }  // namespace RayTracer
