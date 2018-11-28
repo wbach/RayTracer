@@ -100,9 +100,9 @@ vec3 Triangle::calculateSmoothNormal(const vec2& uv) const
 {
     vec3 n;
     float s = uv.x + uv.y;
-    n.x     = -((1.0 - s) * v2_.x + v1_.x * uv.x + v3_.x * uv.y);
-    n.y     = -((1.0 - s) * v2_.y + v1_.y * uv.x + v3_.y * uv.y);
-    n.z     = -((1.0 - s) * v2_.z + v1_.z * uv.x + v3_.z * uv.y);
+    n.x     = -((1.0f - s) * v2_.x + v1_.x * uv.x + v3_.x * uv.y);
+    n.y     = -((1.0f - s) * v2_.y + v1_.y * uv.x + v3_.y * uv.y);
+    n.z     = -((1.0f - s) * v2_.z + v1_.z * uv.x + v3_.z * uv.y);
     n       = glm::normalize(n);
     return n;
 }

@@ -12,8 +12,6 @@
 #include <mutex>
 #include <iostream>
 
-const uint32 THREADS_COUNT = 4;
-
 namespace RayTracer
 {
 namespace
@@ -22,10 +20,10 @@ std::unique_ptr<StepPooler> stepPooler;
 std::mutex stepMutex_;
 }
 
-RayTracerEngine::RayTracerEngine(const Scene &scene)
+RayTracerEngine::RayTracerEngine(const Scene &scene, uint32 threadsCount)
     : scene_(scene)
 {
-    if (scene.camera_ == nullptr)
+    if (scene.camera_ == nullptr || threadsCount <= 0)
     {
         return;
     }
@@ -33,14 +31,16 @@ RayTracerEngine::RayTracerEngine(const Scene &scene)
 
     image_ = std::make_unique<BmpImage>(scene.camera_->getViewPort(), 3);
 
-    //classicRun();
-    multiThreadsRun(THREADS_COUNT);
-
-    image_->save("output.bmp");
+    threadsCount == 1 ? classicRun() : multiThreadsRun(threadsCount);
 }
 
 RayTracerEngine::~RayTracerEngine()
 {
+}
+
+void RayTracerEngine::saveImage(const std::string& filename) const
+{
+    image_->save("output.bmp");
 }
 
 void RayTracerEngine::classicRun()

@@ -16,8 +16,9 @@ class Intersection;
 class RayTracerEngine
 {
 public:
-    RayTracerEngine(const Scene&);
+    RayTracerEngine(const Scene&, uint32 threadsCount);
     ~RayTracerEngine();
+    void saveImage(const std::string& filename) const;
 
 private:
     void run();

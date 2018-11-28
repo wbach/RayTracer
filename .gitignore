@@ -5,6 +5,8 @@ Build/
 Intermediate/
 Logs/
 GameEngineCM/output/
+buildBenchmark/
+google_benchmark/
 #dynamic links
 Data
 *.bmp
