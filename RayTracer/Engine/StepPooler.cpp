@@ -1,5 +1,6 @@
 #include "StepPooler.h"
 #include <mutex>
+#include <iostream>
 
 namespace RayTracer
 {
@@ -8,8 +9,29 @@ namespace
 std::mutex mutex_;
 }
 
+#define PBSTR "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+#define PBWIDTH 60
+
+int lastPercent = -1;
+
+void printProgress (double percentage)
+{
+    int val = (int) (percentage * 100);
+
+    if (lastPercent < val)
+    {
+        int lpad = (int) (percentage * PBWIDTH);
+        int rpad = PBWIDTH - lpad;
+        printf ("\r%3d%% [%.*s%*s]", val, lpad, PBSTR, rpad, "");
+        fflush (stdout);
+        lastPercent = val;
+    }
+}
+
 StepPooler::StepPooler(const vec2ui& viewPort)
     : viewPort_(viewPort)
+    , progress_(0)
+    , total_(viewPort.x * viewPort.y)
 {
 }
 wb::optional<vec2ui> StepPooler::getNextStep()
@@ -35,6 +57,9 @@ wb::optional<vec2ui> StepPooler::getNextStep()
 
     result.y = current_.y;
 
+    ++progress_;
+    auto progress = static_cast<double>(progress_) / static_cast<double>(total_);
+    printProgress(progress);
     return result;
 }
 }  // namespace RayTracer

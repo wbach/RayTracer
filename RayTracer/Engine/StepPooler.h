@@ -13,5 +13,7 @@ public:
 private:
     vec2ui viewPort_;
     vec2ui current_;
+    uint32_t progress_;
+    uint32_t total_;
 };
 }  // namespace RayTracer

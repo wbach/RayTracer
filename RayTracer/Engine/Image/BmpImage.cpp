@@ -39,7 +39,7 @@ void BmpImage::save(const std::string& filename) const
     header.important_colours        = 0;
 
     std::ofstream file;
-    file.open(filename, std::ios::out | std::ios::trunc | std::ios::binary);
+    file.open(filename + ".bmp", std::ios::out | std::ios::trunc | std::ios::binary);
     file.write((char*)(&BM), 2);
     file.write((char*)(&header), sizeof(header));
 

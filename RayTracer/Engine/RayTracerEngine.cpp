@@ -11,6 +11,7 @@
 #include <thread>
 #include <mutex>
 #include <iostream>
+#include <chrono>
 
 namespace RayTracer
 {
@@ -30,8 +31,7 @@ RayTracerEngine::RayTracerEngine(const Scene &scene, uint32 threadsCount)
     stepPooler.reset(new StepPooler(scene_.camera_->getViewPort()));
 
     image_ = std::make_unique<BmpImage>(scene.camera_->getViewPort(), 3);
-
-    threadsCount == 1 ? classicRun() : multiThreadsRun(threadsCount);
+    multiThreadsRun(threadsCount);
 }
 
 RayTracerEngine::~RayTracerEngine()
@@ -40,22 +40,13 @@ RayTracerEngine::~RayTracerEngine()
 
 void RayTracerEngine::saveImage(const std::string& filename) const
 {
-    image_->save("output.bmp");
-}
-
-void RayTracerEngine::classicRun()
-{
-    for (uint32 y = 0; y < scene_.camera_->getViewPort().y; y++)
-    {
-        for (uint32 x = 0; x < scene_.camera_->getViewPort().x; x++)
-        {
-            step(x, y);
-        }
-    }
+    image_->save(filename);
 }
 
 void RayTracerEngine::multiThreadsRun(uint32 threadsCount)
 {
+    auto startTime = std::chrono::high_resolution_clock::now();
+
     std::vector<std::thread> threads;
 
     for (uint32 x = 0; x < threadsCount - 1; ++x)
@@ -69,6 +60,14 @@ void RayTracerEngine::multiThreadsRun(uint32 threadsCount)
     {
         thread.join();
     }
+
+    std::cout << std::endl;
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::ratio<1,1>> durration = endTime - startTime;
+
+    std::cout << "Time : " << durration.count() << "s." << std::endl;
+
 }
 
 void RayTracerEngine::run()

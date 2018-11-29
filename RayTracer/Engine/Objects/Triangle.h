@@ -15,15 +15,15 @@ public:
 
 private:
     vec3 calculateSmoothNormal(const vec2& uv) const;
-    void calculateStaticNormal();
+    vec3 calculateStaticNormal(const vec3& v1, const vec3& v2, const vec3& v3);
     vec2 calculateUV(const vec3& intersectPoint) const;
     bool isInPlanePointInTriangle(const vec2& uv) const;
+    void calculateIntersectionConstVariables();
 
 private:
     vec3 v1_;
     vec3 v2_;
     vec3 v3_;
-    bool useCustomNormal;
     bool useSmoothNormal;
     float d_;
     float dot00_;

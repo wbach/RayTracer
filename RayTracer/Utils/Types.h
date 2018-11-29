@@ -94,6 +94,7 @@ std::string to_string(const vec3i& v);
 typedef wb::vec2i vec2i;
 typedef wb::vec2ui vec2ui;
 typedef wb::vec3i vec3i;
+typedef wb::vec3ui vec3ui;
 typedef wb::vec3ui8 vec3ui8;
 
 typedef glm::vec3 vec3;
