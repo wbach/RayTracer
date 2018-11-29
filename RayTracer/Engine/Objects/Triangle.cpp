@@ -12,7 +12,7 @@ Triangle::Triangle(const vec3& v1, const vec3& v2, const vec3& v3, const vec3& n
     : v1_(v1)
     , v2_(v2)
     , v3_(v3)
-    , useSmoothNormal(false)
+    , useSmoothNormal_(false)
 {
     normal_ = normal;
     calculateIntersectionConstVariables();
@@ -48,13 +48,25 @@ OptionalFloat Triangle::intersect(const Ray& ray) const
 
 vec3 Triangle::getNormal(const vec3& intersectPoint) const
 {
-    if (useSmoothNormal)
+    if (useSmoothNormal_)
     {
         const auto& uv = calculateUV(intersectPoint);
         return calculateSmoothNormal(uv);
     }
     
     return normal_;
+}
+
+void Triangle::setVertexNormals(const vec3 &vn1, const vec3 &vn2, const vec3 &vn3)
+{
+    vn1_= vn1;
+    vn2_= vn2;
+    vn3_= vn3;
+}
+
+void Triangle::enableSmoothNormals(bool use)
+{
+    useSmoothNormal_ = use;
 }
 
 bool Triangle::isInPlanePointInTriangle(const vec2& uv) const
@@ -74,8 +86,8 @@ vec2 Triangle::calculateUV(const vec3& intersectPoint) const
     float invDenom = 1.f / (dot00_ * dot11 - dot01 * dot01);
 
     vec2 result;
-    result.x = (dot11 * dot02 - dot01 * dot12) * invDenom;
-    result.y = (dot00_ * dot12 - dot01 * dot02) * invDenom;
+    result.y = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    result.x = (dot00_ * dot12 - dot01 * dot02) * invDenom;
 
     return result;
 }
@@ -89,12 +101,6 @@ vec3 Triangle::calculateStaticNormal(const vec3& v1, const vec3& v2, const vec3&
 
 vec3 Triangle::calculateSmoothNormal(const vec2& uv) const
 {
-    vec3 n;
-    float s = uv.x + uv.y;
-    n.x     = -((1.0f - s) * v2_.x + v1_.x * uv.x + v3_.x * uv.y);
-    n.y     = -((1.0f - s) * v2_.y + v1_.y * uv.x + v3_.y * uv.y);
-    n.z     = -((1.0f - s) * v2_.z + v1_.z * uv.x + v3_.z * uv.y);
-    n       = glm::normalize(n);
-    return n;
+    return glm::normalize((1.f - uv.x - uv.y) * vn1_ + uv.x * vn2_ + uv.y * vn3_);
 }
 }  // namespace RayTracer

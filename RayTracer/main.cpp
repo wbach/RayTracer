@@ -2,6 +2,8 @@
 #include "ExampleScene.h"
 #include <iostream>
 #include <unordered_map>
+#include <algorithm>
+#include <sstream>
 
 std::unordered_map<char, std::string> getOptions(int argc, char** argv)
 {
@@ -23,17 +25,19 @@ std::unordered_map<char, std::string> getOptions(int argc, char** argv)
     return result;
 }
 
-void welcomMessage(uint32_t threadsCount, const std::string& outputFileName)
+void welcomMessage(uint32_t threadsCount, const std::string& outputFileName, const vec2ui& viewport)
 {
     std::cout << "WBach : Rayracer" << std::endl;
     std::cout << "Threads : " << threadsCount << std::endl;
     std::cout << "Output : " << outputFileName << std::endl;
+    std::cout << "Viewport : " << viewport.x << "x" << viewport.y << std::endl;
 }
 
 int main(int argc, char** argv)
 {
     std::string outputFileName = "output";
     uint32_t threadsCount = 4;
+    vec2ui viewport = {640, 480};
 
     auto arguments = getOptions(argc, argv);
 
@@ -47,10 +51,18 @@ int main(int argc, char** argv)
         threadsCount = std::stoi(arguments.at('t'));
     }
 
-    welcomMessage(threadsCount, outputFileName);
+    if (arguments.count('r'))
+    {
+        auto& r = arguments.at('r');
+        std::replace(r.begin(), r.end(), 'x', ' ');
+        std::istringstream is(r);
+        is >> viewport.x >> viewport.y;
+    }
+
+    welcomMessage(threadsCount, outputFileName, viewport);
 
     Scene scene;
-    createExampleScene(scene);
+    createExampleScene(scene, viewport);
 
     WaveFrontObjLoader loader_;
     auto trianglesMesh = loader_.loadMesh("/media/sf_D_DRIVE/m.obj");

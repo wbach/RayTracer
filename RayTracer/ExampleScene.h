@@ -50,7 +50,7 @@ static vec3 createFloatRgb(uint8 r, uint8 g, uint8 b)
     return vec3(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.f, static_cast<float>(b) / 255.f);
 }
 
-static void createExampleScene(Scene &scene)
+static void createExampleScene(Scene &scene, const vec2ui& viewPort)
 {
     addSphere(scene, 2.f, vec3(0), createFloatRgb(3, 3, 3), createFloatRgb(204, 3, 3), createFloatRgb(204, 204, 204),
               20, false);
@@ -67,6 +67,6 @@ static void createExampleScene(Scene &scene)
     addLight(scene, vec3(-4, 4, -2), createFloatRgb(255, 255, 255));
     addLight(scene, vec3(1, 1, -10), createFloatRgb(255, 255, 255));
 
-    scene.camera_.reset(new Camera(vec2ui(1000, 800), 50.f * static_cast<float>(M_PI) / 180, vec3(0, 1, 0),
+    scene.camera_.reset(new Camera(viewPort, 50.f * static_cast<float>(M_PI) / 180, vec3(0, 1, 0),
                                    vec3(0, 0, 0), vec3(3, 15, -16)));
 }

@@ -25,7 +25,8 @@ std::vector<Triangle> WaveFrontObjLoader::loadMesh(const std::string& filename)
     while (std::getline(infile, line))
     {
         std::istringstream iss(line);
-        std::string prefix; float a, b, c;
+        std::string prefix;
+
         if (iss >> prefix)
         { 
             if (prefix[0] == '#')
@@ -68,7 +69,7 @@ std::vector<Triangle> WaveFrontObjLoader::loadMesh(const std::string& filename)
                 TriangleData data;
                 for (int i = 0; i < 3; ++i)
                 {
-                    if ((iss2 >> data.indexes_[i].x >> data.indexes_[i].y >> data.indexes_[i].z))
+                    if (!(iss2 >> data.indexes_[i].x >> data.indexes_[i].y >> data.indexes_[i].z))
                     {
  
                     }
@@ -85,8 +86,14 @@ std::vector<Triangle> WaveFrontObjLoader::loadMesh(const std::string& filename)
         const auto& v1 = vertexes_[data.indexes_[0].x - 1];
         const auto& v2 = vertexes_[data.indexes_[1].x - 1];
         const auto& v3 = vertexes_[data.indexes_[2].x - 1];
-        const auto& normal = normals_[data.indexes_[0].z - 1];
-        result.emplace_back(v1, v2, v3, normal);
+
+        const auto& vn1 = normals_[data.indexes_[0].z - 1];
+        const auto& vn2 = normals_[data.indexes_[1].z - 1];
+        const auto& vn3 = normals_[data.indexes_[2].z - 1];
+
+        result.emplace_back(v1, v2, v3);
+        result.back().setVertexNormals(vn1, vn2, vn3);
+        result.back().enableSmoothNormals(true);
     }
 
     return result;
