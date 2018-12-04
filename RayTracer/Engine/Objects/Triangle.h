@@ -17,6 +17,29 @@ public:
     void enableSmoothNormals(bool);
 
 private:
+    struct VertexData
+    {
+        vec3 v;
+        vec2 vt;
+        vec3 vn;
+
+        VertexData()
+            : VertexData(vec3(0))
+        {
+        }
+        VertexData(const vec3& v)
+            : VertexData(v, vec2(0, 0), vec3(0, 1, 0))
+        {
+        }
+        VertexData(const vec3& v, const vec2& uv, const vec3& vn)
+            : v(v)
+            , vt(uv)
+            , vn(vn)
+        {
+        }
+    };
+
+private:
     vec3 calculateSmoothNormal(const vec2& uv) const;
     vec3 calculateStaticNormal(const vec3& v1, const vec3& v2, const vec3& v3);
     vec2 calculateUV(const vec3& intersectPoint) const;
@@ -24,12 +47,7 @@ private:
     void calculateIntersectionConstVariables();
 
 private:
-    vec3 v1_;
-    vec3 v2_;
-    vec3 v3_;
-    vec3 vn1_;
-    vec3 vn2_;
-    vec3 vn3_;
+    VertexData v_[3];
     bool useSmoothNormal_;
     float d_;
     float dot00_;

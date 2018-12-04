@@ -27,7 +27,7 @@ std::unordered_map<char, std::string> getOptions(int argc, char** argv)
 
 void welcomMessage(uint32_t threadsCount, const std::string& outputFileName, const vec2ui& viewport)
 {
-    std::cout << "WBach : Rayracer" << std::endl;
+    std::cout << "WBach : RayTracer" << std::endl;
     std::cout << "Threads : " << threadsCount << std::endl;
     std::cout << "Output : " << outputFileName << std::endl;
     std::cout << "Viewport : " << viewport.x << "x" << viewport.y << std::endl;
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
     createExampleScene(scene, viewport);
 
     WaveFrontObjLoader loader_;
-    auto trianglesMesh = loader_.loadMesh("/media/sf_D_DRIVE/m.obj");
+    auto trianglesMesh = loader_.loadMesh("/media/sf_C_DRIVE/Data/Private/23-chevrolet-camaro/Chevrolet_Camaro_without_box.obj");
     std::cout << "trianglesMesh.size :  " << trianglesMesh.size() << std::endl;
     for (const auto& t : trianglesMesh)
     {

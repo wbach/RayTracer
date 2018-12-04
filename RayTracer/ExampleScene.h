@@ -52,21 +52,21 @@ static vec3 createFloatRgb(uint8 r, uint8 g, uint8 b)
 
 static void createExampleScene(Scene &scene, const vec2ui& viewPort)
 {
-    addSphere(scene, 2.f, vec3(0), createFloatRgb(3, 3, 3), createFloatRgb(204, 3, 3), createFloatRgb(204, 204, 204),
-              20, false);
+    // addSphere(scene, 2.f, vec3(0), createFloatRgb(3, 3, 3), createFloatRgb(204, 3, 3), createFloatRgb(204, 204,kubicz 204),
+    //           20, false);
 
-    addSphere(scene, 1.f, vec3(2.f, 2.f, 1.f), createFloatRgb(3, 3, 3), createFloatRgb(3, 204, 3),
-              createFloatRgb(3, 3, 3), 20, false);
+    // addSphere(scene, 1.f, vec3(2.f, 2.f, 1.f), createFloatRgb(3, 3, 3), createFloatRgb(3, 204, 3),
+    //           createFloatRgb(3, 3, 3), 20, false);
 
-    addTriangle(scene, vec3(-5, -4, -5), vec3(-5, -4, 5), vec3(5, -4, 5), vec3(0), createFloatRgb(3, 3, 3),
+    addTriangle(scene, vec3(-5, -1, -5), vec3(-5, -1, 5), vec3(5, -1, 5), vec3(0), createFloatRgb(3, 3, 3),
                 createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1, true);
 
-    addTriangle(scene, vec3(5, -4, 5), vec3(5, -4, -5), vec3(-5, -4, -5), vec3(0), createFloatRgb(3, 3, 3),
+    addTriangle(scene, vec3(5, -1, 5), vec3(5, -1, -5), vec3(-5, -1, -5), vec3(0), createFloatRgb(3, 3, 3),
                 createFloatRgb(3, 3, 153), createFloatRgb(3, 3, 3), 1, true);
 
     addLight(scene, vec3(-4, 4, -2), createFloatRgb(255, 255, 255));
     addLight(scene, vec3(1, 1, -10), createFloatRgb(255, 255, 255));
 
     scene.camera_.reset(new Camera(viewPort, 50.f * static_cast<float>(M_PI) / 180, vec3(0, 1, 0),
-                                   vec3(0, 0, 0), vec3(3, 15, -16)));
+                                   vec3(0, 0, 0), vec3(3, 15, 16)));
 }

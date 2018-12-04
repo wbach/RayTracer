@@ -21,7 +21,7 @@ file(GLOB_RECURSE SRCS_UTILS ${PROJECT_SOURCE_DIR}/../RayTracer/Utils/*.cpp)
 include_directories("./RayTracer/")
 
 add_executable(rayTracerExe ${PROJECT_SOURCE_DIR}/../RayTracer/main.cpp ${SRCS_ENGINE} ${SRCS_UTILS})
-set_target_properties(rayTracerExe PROPERTIES COMPILE_FLAGS "-O3" ) #LINK_FLAGS "-m32"
+set_target_properties(rayTracerExe PROPERTIES COMPILE_FLAGS "-O3" LINK_FLAGS "-static-libgcc -static-libstdc++") #LINK_FLAGS "-m32 -static-libgcc -static-libstdc++"
 target_link_libraries(rayTracerExe pthread)
 
 if(BUILD_BENCHMARK)
