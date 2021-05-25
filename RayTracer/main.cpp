@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <sstream>
+#include <thread>
 
 std::unordered_map<char, std::string> getOptions(int argc, char** argv)
 {
@@ -36,8 +37,9 @@ void welcomMessage(uint32_t threadsCount, const std::string& outputFileName, con
 int main(int argc, char** argv)
 {
     std::string outputFileName = "output";
-    uint32_t threadsCount = 4;
+    uint32_t threadsCount =  std::thread::hardware_concurrency();
     vec2ui viewport = {640, 480};
+    std::string meshFile;
 
     auto arguments = getOptions(argc, argv);
 
@@ -51,6 +53,11 @@ int main(int argc, char** argv)
         threadsCount = std::stoi(arguments.at('t'));
     }
 
+    if (arguments.count('m'))
+    {
+        meshFile = arguments.at('m');
+    }
+
     if (arguments.count('r'))
     {
         auto& r = arguments.at('r');
@@ -62,17 +69,22 @@ int main(int argc, char** argv)
     welcomMessage(threadsCount, outputFileName, viewport);
 
     Scene scene;
-    createExampleScene(scene, viewport);
-
-    WaveFrontObjLoader loader_;
-    auto trianglesMesh = loader_.loadMesh("/media/sf_C_DRIVE/Data/Private/23-chevrolet-camaro/Chevrolet_Camaro_without_box.obj");
-    std::cout << "trianglesMesh.size :  " << trianglesMesh.size() << std::endl;
-    for (const auto& t : trianglesMesh)
+    if (meshFile.empty())
     {
-        scene.objects_.emplace_back(new Triangle(t));
+        createExampleScene(scene, viewport);
+    }
+    else
+    {
+        createFlorAndLightsScene(scene, viewport);
+        WaveFrontObjLoader loader_;
+        auto trianglesMesh = loader_.loadMesh(meshFile);
+        std::cout << "trianglesMesh.size :  " << trianglesMesh.size() << std::endl;
+        for (const auto& t : trianglesMesh)
+        {
+            scene.objects_.emplace_back(new Triangle(t));
+        }
     }
 
     RayTracerEngine rayTracer(scene, threadsCount);
-
     rayTracer.saveImage(outputFileName);
 }
